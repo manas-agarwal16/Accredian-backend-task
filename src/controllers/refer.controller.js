@@ -9,20 +9,10 @@ import {
 
 const prisma = new PrismaClient();
 
-// referrerName String
-//   referrerEmail String
-//   referrerEmployeeId String?  // Optional Employee ID
-//   refereeName String
-//   refereeEmail String
-//   refereePhone String? @db.VarChar(10)
-//   courseName CourseCategory
-//   referrerNote String?
-
 const referNow = async function (req, res) {
   const {
     referrerName,
     referrerEmail,
-    referrerEmployeeId,
     refereeName,
     refereeEmail,
     refereePhone,
@@ -40,14 +30,14 @@ const referNow = async function (req, res) {
     return ApiResponse(401, {}, "Please enter all required fields");
   }
 
+  let referralCode;
   try {
     // Generating a random referral code associcated with the referrer and sending it to referee. to enroll in the couse with this code to get the discount.
-    const referralCode = "ACC" + Math.floor(Math.random() * 10000);
+    referralCode = "ACC" + Math.floor(Math.random() * 10000);
 
-    const referral = await prisma.referral.create({
+    await prisma.referral.create({
       referrerName,
       referrerEmail,
-      referrerEmployeeId,
       refereeName,
       refereeEmail,
       refereePhone,
@@ -55,7 +45,6 @@ const referNow = async function (req, res) {
       referrerNote,
       referralCode,
     });
-    
   } catch (error) {
     console.error(`Error in creating a referral ${error}`);
     return ApiResponse(501, {}, "Error in creating a referral ${error}");
@@ -67,7 +56,6 @@ const referNow = async function (req, res) {
       refereeName,
       refereeEmail,
       refereePhone,
-      referrerEmployeeId,
       courseName,
       referrerNote
     );
@@ -78,7 +66,6 @@ const referNow = async function (req, res) {
       refereeName,
       refereeEmail,
       refereePhone,
-      referrerEmployeeId,
       courseName,
       referrerNote,
       referralCode

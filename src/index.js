@@ -11,7 +11,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 import { referNow } from "./controllers/refer.controller.js";
-import upload from "./middlewares/multer.js";
 
 app.post("/refer-now", referNow);
 

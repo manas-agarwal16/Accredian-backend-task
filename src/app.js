@@ -9,9 +9,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 import { referNow } from "./controllers/refer.controller.js";
-import upload from "./middlewares/multer.js";
 
-app.post("/refer-now", upload.single("resume"), referNow);
+app.post("/refer-now", referNow);
 
 app.listen(PORT, () => {
   console.log(`server is running on the port ${PORT}`);

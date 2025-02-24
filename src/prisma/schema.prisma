@@ -41,7 +41,6 @@ model Referral {
   id Int @id @default(autoincrement())
   referrerName String
   referrerEmail String
-  referrerEmployeeId String?  // Optional Employee ID
   refereeName String
   refereeEmail String
   refereePhone String? @db.VarChar(10)
