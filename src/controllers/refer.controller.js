@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, CourseCategory } from "@prisma/client";
 import {
   ApiResponse,
-  uploadOncloudinary,
   sendOTPThroughEmail,
   referrerEmailContent,
   refereeEmailContent,
@@ -10,7 +9,7 @@ import {
 const prisma = new PrismaClient();
 
 const referNow = async function (req, res) {
-  const {
+  let {
     referrerName,
     referrerEmail,
     refereeName,
@@ -20,6 +19,8 @@ const referNow = async function (req, res) {
     referrerNote,
   } = req.body;
 
+  console.log("here : ", req.body);
+
   if (
     !referrerName ||
     !referrerEmail ||
@@ -27,15 +28,50 @@ const referNow = async function (req, res) {
     !refereeEmail ||
     !courseName
   ) {
-    return ApiResponse(401, {}, "Please enter all required fields");
+    return res
+      .status(401)
+      .json(new ApiResponse(401, {}, "Please enter all required fields"));
   }
 
-  let referralCode;
+  let referralCode, referral;
   try {
     // Generating a random referral code associcated with the referrer and sending it to referee. to enroll in the couse with this code to get the discount.
     referralCode = "ACC" + Math.floor(Math.random() * 10000);
 
-    await prisma.referral.create({
+    courseName = CourseCategory[courseName.replaceAll(" ", "_")];
+    console.log("courseName : ", courseName);
+
+    referral = await prisma.referral.create({
+      data: {
+        referrerName,
+        referrerEmail,
+        refereeName,
+        refereeEmail,
+        refereePhone,
+        courseName,
+        referrerNote,
+        referralCode,
+      },
+    });
+  } catch (error) {
+    console.error(`Error in creating a referral ${error}`);
+    return res
+      .status(501)
+      .json(new ApiResponse(501, {}, "Error in creating a referral ${error}"));
+  }
+  // Notifing the referrer and referee via email.
+  try {
+    const referrerContent = referrerEmailContent({
+      referrerName,
+      refereeName,
+      refereeEmail,
+      refereePhone,
+      courseName,
+      referrerNote,
+      referralCode
+    });
+
+    const refereeContent = refereeEmailContent({
       referrerName,
       referrerEmail,
       refereeName,
@@ -45,31 +81,6 @@ const referNow = async function (req, res) {
       referrerNote,
       referralCode,
     });
-  } catch (error) {
-    console.error(`Error in creating a referral ${error}`);
-    return ApiResponse(501, {}, "Error in creating a referral ${error}");
-  }
-  // Notifing the referrer and referee via email.
-  try {
-    const referrerContent = referrerEmailContent(
-      referrerName,
-      refereeName,
-      refereeEmail,
-      refereePhone,
-      courseName,
-      referrerNote
-    );
-
-    const refereeContent = refereeEmailContent(
-      referrerName,
-      referrerEmail,
-      refereeName,
-      refereeEmail,
-      refereePhone,
-      courseName,
-      referrerNote,
-      referralCode
-    );
 
     await sendOTPThroughEmail(
       referrerEmail,
@@ -82,14 +93,22 @@ const referNow = async function (req, res) {
       refereeContent
     );
 
-    return ApiResponse(
-      201,
-      { referral },
-      "Your referral has been successfully recorded"
-    );
+    console.log("sending response back");
+
+    return res
+      .status(201)
+      .json(
+        new ApiResponse(
+          201,
+          { referral },
+          "Your referral has been successfully recorded"
+        )
+      );
   } catch (error) {
     console.error("Error in sending email notification", error);
-    return ApiResponse(501, {}, "Error in sending email notification");
+    return res
+      .status(501)
+      .json(new ApiResponse(501, {}, "Error in sending email notification"));
   }
 };
 
