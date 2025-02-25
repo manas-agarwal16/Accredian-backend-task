@@ -19,8 +19,6 @@ const referNow = async function (req, res) {
     referrerNote,
   } = req.body;
 
-  console.log("here : ", req.body);
-
   if (
     !referrerName ||
     !referrerEmail ||
@@ -39,7 +37,14 @@ const referNow = async function (req, res) {
     referralCode = "ACC" + Math.floor(Math.random() * 10000);
 
     courseName = CourseCategory[courseName.replaceAll(" ", "_")];
-    console.log("courseName : ", courseName);
+
+    await prisma.referral.deleteMany({
+      where: {
+        referrerEmail: referrerEmail,
+        refereeEmail: refereeEmail,
+        courseName: courseName,
+      },
+    });
 
     referral = await prisma.referral.create({
       data: {
@@ -68,7 +73,7 @@ const referNow = async function (req, res) {
       refereePhone,
       courseName,
       referrerNote,
-      referralCode
+      referralCode,
     });
 
     const refereeContent = refereeEmailContent({
@@ -92,8 +97,6 @@ const referNow = async function (req, res) {
       `You've Been Referred for a Course!`,
       refereeContent
     );
-
-    console.log("sending response back");
 
     return res
       .status(201)
