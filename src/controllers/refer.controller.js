@@ -1,4 +1,5 @@
-import { PrismaClient, CourseCategory } from "@prisma/client";
+import PrismaClientPkg from "@prisma/client";
+const { PrismaClient, CourseCategory } = PrismaClientPkg;
 import {
   ApiResponse,
   sendOTPThroughEmail,
