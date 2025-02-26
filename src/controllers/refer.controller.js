@@ -33,6 +33,19 @@ const referNow = async function (req, res) {
       .json(new ApiResponse(401, {}, "Please enter all required fields"));
   }
 
+  // Checking if the referrer and referee email are same
+  if (referrerEmail === refereeEmail) {
+    return res
+      .status(401)
+      .json(
+        new ApiResponse(
+          401,
+          {},
+          "Referrer and referee email can not be the same!!!"
+        )
+      );
+  }
+
   let referralCode, referral;
   try {
     // Generating a random referral code associcated with the referrer and sending it to referee. to enroll in the couse with this code to get the discount.
@@ -107,11 +120,7 @@ const referNow = async function (req, res) {
     return res
       .status(201)
       .json(
-        new ApiResponse(
-          201,
-          { referral },
-          "Your referral has been successfully recorded"
-        )
+        new ApiResponse(201, {}, "Your referral has been successfully recorded")
       );
   } catch (error) {
     console.error("Error in sending email notification", error);
