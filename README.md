@@ -91,5 +91,5 @@ npm start
 
 The API is deployed on Render:
 
-🔗 **Backend URL:** [https://accredian-backend-task.onrender.com](https://accredian-backend-task.onrender.com)
+🔗 **Backend URL:** [https://accredian-backend-task-b7sp.onrender.com/](https://accredian-backend-task-b7sp.onrender.com)
 
