@@ -1,18 +1,24 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
+model Referral {
+  id            Int            @id @default(autoincrement())
+  referrerName  String
+  referrerEmail String
+  refereeName   String
+  refereeEmail  String
+  refereePhone  String?        @db.VarChar(10)
+  courseName    CourseCategory
+  referrerNote  String?
+  referralCode  String
+}
 
 enum CourseCategory {
   Digital_Transformation
@@ -23,17 +29,3 @@ enum CourseCategory {
   Cyber_Security
   Blockchain_Development
 }
-
-
-model Referral {
-  id Int @id @default(autoincrement())
-  referrerName String
-  referrerEmail String
-  refereeName String
-  refereeEmail String
-  refereePhone String? @db.VarChar(10)
-  courseName CourseCategory
-  referrerNote String?
-  referralCode String
-}
-

@@ -19,6 +19,7 @@ const referNow = async function (req, res) {
     referrerNote,
   } = req.body;
 
+  // Validating the request body
   if (
     !referrerName ||
     !referrerEmail ||
@@ -38,6 +39,7 @@ const referNow = async function (req, res) {
 
     courseName = CourseCategory[courseName.replaceAll(" ", "_")];
 
+    // Deleting the existing referral if any for the same referrer and referee
     await prisma.referral.deleteMany({
       where: {
         referrerEmail: referrerEmail,
@@ -46,6 +48,7 @@ const referNow = async function (req, res) {
       },
     });
 
+    // Creating a new referral
     referral = await prisma.referral.create({
       data: {
         referrerName,
@@ -66,6 +69,7 @@ const referNow = async function (req, res) {
   }
   // Notifing the referrer and referee via email.
   try {
+    // Email content for referrer and referee
     const referrerContent = referrerEmailContent({
       referrerName,
       refereeName,
@@ -87,6 +91,7 @@ const referNow = async function (req, res) {
       referralCode,
     });
 
+    // Sending email to referrer and referee
     await sendOTPThroughEmail(
       referrerEmail,
       "Your Referral has been Sent Successfully!",

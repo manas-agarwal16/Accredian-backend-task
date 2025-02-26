@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import nodemailer from "nodemailer";
 
-
 const transporter = nodemailer.createTransport({
   service: "gmail",
   host: "smtp.gmail.com",
@@ -22,6 +21,7 @@ transporter.on("sent", (info) => {
   }
 });
 
+// Function to send OTP through email
 const sendOTPThroughEmail = async (email, subject, message) => {
   let mailOptions = {
     from: process.env.NODEMAILER_EMAIL,

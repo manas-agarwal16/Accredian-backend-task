@@ -1,3 +1,4 @@
+//Email content for the referrer
 const referrerEmailContent = ({
   referrerName,
   refereeName,
@@ -16,6 +17,7 @@ const referrerEmailContent = ({
   <p>Best Regards, <br><strong>The Accredian Team</strong></p>`;
 };
 
+// Email content for the referee
 const refereeEmailContent = ({
   referrerName,
   referrerEmail,
@@ -26,18 +28,6 @@ const refereeEmailContent = ({
   referrerNote,
   referralCode,
 }) => {
-  console.log(
-    "refereeEmailContent : ",
-    referrerName,
-    referrerEmail,
-    refereeName,
-    refereeEmail,
-    refereePhone,
-    courseName,
-    referrerNote,
-    referralCode
-  );
-
   return `<h2>Hello ${refereeName},</h2>
       <p><strong>${referrerName}</strong> has referred you to join the <strong>${courseName}</strong> course.</p>
       <p>Enroll in the ${courseName} course using the code <strong>${referralCode}</strong></p>
